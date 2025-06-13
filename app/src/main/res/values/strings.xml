@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SecureVault</string>
+    <string name="switch_between_light_and_dark_theme">Switch between light and dark theme</string>
+</resources>

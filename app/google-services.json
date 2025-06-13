@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "29302254183",
+    "project_id": "vault-bbd8a",
+    "storage_bucket": "vault-bbd8a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29302254183:android:4817fa6e4bcab14bed42c2",
+        "android_client_info": {
+          "package_name": "com.bbg.securevault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAaJxejSK7WPbM2aYpwT-IGZGMeB7gPQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
