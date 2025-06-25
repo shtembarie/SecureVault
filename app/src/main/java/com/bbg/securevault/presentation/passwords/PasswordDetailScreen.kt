@@ -24,6 +24,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
+import com.bbg.securevault.domain.models.PasswordCategory
 import com.bbg.securevault.domain.models.PasswordEntry
 import com.bbg.securevault.presentation.core.utils.InfoRow
 import java.text.DateFormat
@@ -86,9 +87,10 @@ fun PasswordDetailScreen(
                             tint = if (password.favorite) Color.Yellow else Color.Gray
                         )
                     }
-                    IconButton(onClick = { isEditing = true }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit")
-                    }
+//                    IconButton(
+//                        onClick = { navController.navigate("password/edit/${password.id}") }) {
+//                        Icon(Icons.Default.Edit, contentDescription = "Edit")
+//                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,              // Matches full background
@@ -155,10 +157,17 @@ fun PasswordDetailScreen(
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.Gray
                     )
+                    val displayCategory = if (password.category == PasswordCategory.OTHER && !password.customCategory.isNullOrEmpty()) {
+                        password.customCategory!!
+                    } else {
+                        password.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                    }
+
                     AssistChip(
                         onClick = { },
-                        label = { Text(password.category.name) }
+                        label = { Text(displayCategory) }
                     )
+
                     Spacer(Modifier.height(16.dp))
                     password.notes?.let {
                         Text("Notes", style = MaterialTheme.typography.labelSmall, color = Color.Gray)

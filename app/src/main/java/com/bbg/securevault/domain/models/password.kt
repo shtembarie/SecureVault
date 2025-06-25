@@ -15,6 +15,7 @@ data class PasswordEntry(
     val url: String? = null,
     val notes: String? = null,
     val category: PasswordCategory,
+    val customCategory: String? = null,
     val favorite: Boolean,
     val lastModified: Long, // timestamp in millis
     val createdAt: Long // timestamp in millis

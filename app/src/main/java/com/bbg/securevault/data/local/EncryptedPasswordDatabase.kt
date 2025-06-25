@@ -26,6 +26,7 @@ abstract class EncryptedPasswordDatabase : RoomDatabase() {
                     EncryptedPasswordDatabase::class.java,
                     "secure_vault.db"
                 )
+                    .fallbackToDestructiveMigration()
                     .openHelperFactory(factory)
                     .build()
 
