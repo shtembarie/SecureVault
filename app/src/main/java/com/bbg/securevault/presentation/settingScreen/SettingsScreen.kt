@@ -2,7 +2,6 @@ package com.bbg.securevault.presentation.settingScreen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -27,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
-import com.bbg.securevault.data.BiometricSettingsStore
+import com.bbg.securevault.domain.BiometricSettingsStore
 import com.bbg.securevault.presentation.passwords.BiometricAuthPrompt
 import com.bbg.securevault.presentation.settingScreen.cards.Section
 import com.bbg.securevault.presentation.settingScreen.cards.SettingItem

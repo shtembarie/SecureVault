@@ -1,6 +1,6 @@
 package com.bbg.securevault.presentation.core
 
-import com.bbg.securevault.domain.models.PasswordGeneratorOptions
+import com.bbg.securevault.data.models.PasswordGeneratorOptions
 
 /**
  * Created by Enoklit on 04.06.2025.

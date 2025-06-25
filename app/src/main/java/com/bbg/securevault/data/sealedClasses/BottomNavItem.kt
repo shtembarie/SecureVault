@@ -1,4 +1,4 @@
-package com.bbg.securevault.domain.sealedClasses
+package com.bbg.securevault.data.sealedClasses
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home

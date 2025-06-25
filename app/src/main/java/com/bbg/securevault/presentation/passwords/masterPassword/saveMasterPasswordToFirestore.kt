@@ -1,9 +1,8 @@
 package com.bbg.securevault.presentation.passwords.masterPassword
 
-import androidx.compose.runtime.Composable
+import android.util.Base64
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import java.lang.Error
 
 /**
  * Created by Enoklit on 11.06.2025.
@@ -15,11 +14,17 @@ fun SaveMasterPasswordToFirestore(
     onError: (String) -> Unit
 ) {
     val firestore = FirebaseFirestore.getInstance()
-    val hashed = hashPassword(password)
-    val data = hashMapOf("secondPasswordHash" to hashed)
+    val salt = generateSalt()
+    val hashed = hashPasswordPBKDF2(password, salt)
+    val saltBase64 = Base64.encodeToString(salt, Base64.NO_WRAP)
+
+    val data = hashMapOf(
+        "secondPasswordHash" to hashed,
+        "secondPasswordSalt" to saltBase64
+    )
 
     firestore.collection("users").document(uid)
         .set(data, SetOptions.merge())
         .addOnSuccessListener { onSuccess() }
-        .addOnFailureListener {e -> onError("Saving failed: ${e.message}")}
+        .addOnFailureListener { e -> onError("Saving failed: ${e.message}") }
 }

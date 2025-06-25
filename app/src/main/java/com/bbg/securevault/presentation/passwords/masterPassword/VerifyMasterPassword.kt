@@ -1,21 +1,35 @@
 package com.bbg.securevault.presentation.passwords.masterPassword
 
+import android.util.Base64
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Created by Enoklit on 11.06.2025.
  */
-
-fun VerifyMasterPassword(uid: String, inputPassword: String, onSuccess: () -> Unit, onError: (String) -> Unit){
+fun VerifyMasterPassword(
+    uid: String,
+    inputPassword: String,
+    onSuccess: () -> Unit,
+    onError: (String) -> Unit
+) {
     val firestore = FirebaseFirestore.getInstance()
-    val inputHash = hashPassword(inputPassword)
 
     firestore.collection("users").document(uid).get()
         .addOnSuccessListener { doc ->
             val storedHash = doc.getString("secondPasswordHash")
-            if (storedHash == inputHash) {
+            val storedSaltBase64 = doc.getString("secondPasswordSalt")
+
+            if (storedHash == null || storedSaltBase64 == null) {
+                onError("No password data found")
+                return@addOnSuccessListener
+            }
+
+            val salt = Base64.decode(storedSaltBase64, Base64.DEFAULT)
+            val inputHash = hashPasswordPBKDF2(inputPassword, salt)
+
+            if (inputHash == storedHash) {
                 onSuccess()
-            }else{
+            } else {
                 onError("Incorrect master password")
             }
         }

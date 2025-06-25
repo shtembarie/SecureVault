@@ -37,6 +37,9 @@ uiVersion = "1.5.4"
 firebaseFirestoreKtx = "25.1.4"
 room = "2.7.1"
 ksp = "2.0.0-1.0.21"
+foundationLayoutAndroid = "1.7.2"
+playServicesAuth = "21.3.0"
+playServicesFido = "20.0.1"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
@@ -90,6 +93,9 @@ google-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebas
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+play-services-fido = { group = "com.google.android.gms", name = "play-services-fido", version.ref = "playServicesFido" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

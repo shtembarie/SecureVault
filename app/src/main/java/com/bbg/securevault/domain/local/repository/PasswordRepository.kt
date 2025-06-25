@@ -1,8 +1,8 @@
-package com.bbg.securevault.data.local.repository
+package com.bbg.securevault.domain.local.repository
 
 import android.content.Context
-import com.bbg.securevault.data.local.EncryptedPasswordDatabase
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.domain.local.EncryptedPasswordDatabase
+import com.bbg.securevault.data.models.PasswordEntry
 
 
 /**
@@ -30,6 +30,10 @@ class PasswordRepository(
     }
     suspend fun getPasswordById(id: String): PasswordEntry? {
         return dao.getById(id)
+    }
+    // MODIFY: Accept userId parameter
+    suspend fun getAllPasswordsUsers(userId: String): List<PasswordEntry> {
+        return dao.getAllForUser(userId)
     }
 
 

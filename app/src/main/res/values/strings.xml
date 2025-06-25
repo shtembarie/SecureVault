@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">SecureVault</string>
     <string name="switch_between_light_and_dark_theme">Switch between light and dark theme</string>
+    <string name="die_angegebene_e_mail_adresse_wurde_erfolgreich_verifiziert">Die angegebene E-Mail-Adresse wurde erfolgreich verifiziert</string>
+    <string name="bitte_best_tigen_sie_ihre_e_mail_adresse_wir_berpr_fen_ihren_best_tigungsstatus_alle_1_sekunde">
+        Bitte bestätigen Sie Ihre E-Mail-Adresse.\nWir überprüfen Ihren Bestätigungsstatus alle 1 Sekunde.</string>
+    <string name="berpr_fen_sie_jetzt_die_verifizierung">Überprüfen Sie jetzt die Verifizierung</string>
+    <string name="die_e_mail_adresse_wurde_noch_nicht_best_tigt_bitte_berpr_fen_sie_ihren_posteingang">Die E-Mail-Adresse wurde noch nicht bestätigt. Bitte überprüfen Sie Ihren Posteingang.</string>
+    <string name="ihre_daten_sind_verschl_sselt_und_sicher_gespeichert_nnur_verifizierte_benutzer_k_nnen_auf_den_tresor_zugreifen">
+        Ihre Daten sind verschlüsselt und sicher gespeichert.\nNur verifizierte Benutzer können auf den Tresor zugreifen.
+    </string>    <string name="sicher_einfach_verschl_sselt">Sicher. Einfach. Verschlüsselt.</string>
+    <string name="secure_vault">Secure Vault</string>
+    <string name="erstellen_sie_ihr_konto">Erstellen Sie Ihr Konto</string>
+    <string name="melden_sie_sich_mit_ihre_konto_an">Melden Sie sich mit Ihre Konto an</string>
+    <string name="e_mail_adresse">E-Mail-Adresse</string>
+    <string name="passwort">Passwort</string>
+    <string name="passwort_best_tigen">Passwort bestätigen</string>
+    <string name="konto_erstellen">Mit E-Mail registrieren</string>
+    <string name="anmelden">Mit E-Mail anmelden</string>
+    <string name="registrieren_mit_google">mit Google registrieren</string>
+    <string name="anmelden_mit_google">Mit Google anmelden</string>
+    <string name="bereits_registriert">Bereits registriert?</string>
+    <string name="neu_hier">Noch kein Konto?</string>
+    <string name="web_client_id">54899465948-nvuj9fgvgc2p2rjpbemau6fkqnr49ii1.apps.googleusercontent.com</string>
 </resources>

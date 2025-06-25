@@ -1,38 +1,35 @@
 package com.bbg.securevault.presentation.loginScreen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.bbg.securevault.data.BiometricSettingsStore
-import com.bbg.securevault.data.InactivityManager
-import com.bbg.securevault.data.PasswordStore
-import com.bbg.securevault.data.local.EncryptedPasswordDatabase
-import com.bbg.securevault.data.local.repository.PasswordRepository
-import com.bbg.securevault.presentation.passwords.BiometricAuthPrompt
+import com.bbg.securevault.R
+import com.bbg.securevault.domain.BiometricSettingsStore
+import com.bbg.securevault.presentation.loginScreen.loginsFormSections.VerificationWaitingScreen
+import com.bbg.securevault.presentation.loginScreen.loginsFormSections.biometrics.BiometricPromptWrapper
+import com.bbg.securevault.presentation.loginScreen.loginsFormSections.biometrics.LoginFormSection
+import com.bbg.securevault.presentation.loginScreen.loginsFormSections.loginScreenLogic.VerificationPoller
+import com.bbg.securevault.presentation.loginScreen.masterPasswordsDialogs.MasterPasswordDialog
+import com.bbg.securevault.presentation.loginScreen.masterPasswordsDialogs.SetMasterPasswordDialog
 import com.bbg.securevault.presentation.passwords.LoadingIndicator
-import com.bbg.securevault.presentation.passwords.PasswordTextField
-import com.bbg.securevault.presentation.passwords.masterPassword.SaveMasterPasswordToFirestore
-import com.bbg.securevault.presentation.passwords.masterPassword.VerifyMasterPassword
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.IntentSenderRequest
+import com.bbg.securevault.domain.googlesigninandup.GoogleAuthManager
+import com.bbg.securevault.presentation.passwords.masterPassword.HasMasterPassword
 
 /**
  * Created by Enoklit on 05.06.2025.
@@ -41,7 +38,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(navController: NavController) {
     val auth = remember { FirebaseAuth.getInstance() }
-    val firestore = FirebaseFirestore.getInstance()
+    val context = LocalContext.current
+    val biometricEnabled by BiometricSettingsStore.isEnabledFlow(context).collectAsState(initial = false)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -50,14 +48,82 @@ fun LoginScreen(navController: NavController) {
     var error by remember { mutableStateOf("") }
     var infoMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
+
     var showBiometricPrompt by remember { mutableStateOf(false) }
     var showSetMasterPasswordDialog by remember { mutableStateOf(false) }
     var newMasterPassword by remember { mutableStateOf("") }
     var confirmMasterPassword by remember { mutableStateOf("") }
     var masterPasswordInput by remember { mutableStateOf("") }
     var showMasterPasswordDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val biometricEnabled by BiometricSettingsStore.isEnabledFlow(context).collectAsState(initial = false)
+
+    var hasPromptedBiometric by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
+    val emailFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
+
+    var showVerificationWaiting by remember { mutableStateOf(false) } // Zwischenbildschirm nach Account-Erstellung
+    var isVerified by remember { mutableStateOf(false) }
+    val user = auth.currentUser
+
+    var googleUserEmail by remember { mutableStateOf<String?>(null) }
+    var checkedMasterPassword by remember { mutableStateOf(false) }
+
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            GoogleAuthManager.handleGoogleSignInResult(
+                context = context,
+                intent = intent,
+                onSuccess = {
+                    Log.d("Login", "Google Sign-In successful")
+                    val currentUser = auth.currentUser
+                    if (currentUser != null) {
+                        googleUserEmail = currentUser.email
+                        checkedMasterPassword = false // Reset für neue Prüfung
+                    } else {
+                        error = "Fehler beim Lesen der Nutzer-Email"
+                    }
+                },
+                onError = {
+                    // ❌ Handle error
+                    Log.e("Login", "Google Sign-In error: $it")
+                }
+            )
+        }
+    }
+    // Wenn googleUserEmail gesetzt ist und noch nicht geprüft wurde
+    if (googleUserEmail != null && !checkedMasterPassword) {
+        LaunchedEffect(googleUserEmail) {
+            // hole den User von FirebaseAuth für die UID
+            val user = auth.currentUser
+            if (user != null) {
+                HasMasterPassword(
+                    uid = user.uid,
+                    onResult = { hasMasterPassword ->
+                        if (hasMasterPassword) {
+                            showMasterPasswordDialog = true
+                        } else {
+                            showSetMasterPasswordDialog = true
+                        }
+                        checkedMasterPassword = true
+                    },
+                    onError = { errMsg ->
+                        error = errMsg
+                        checkedMasterPassword = true
+                    }
+                )
+            } else {
+                error = "User nicht eingeloggt"
+                checkedMasterPassword = true
+            }
+        }
+    }
+
+
 
     fun resetMessages() {
         error = ""
@@ -115,7 +181,8 @@ fun LoginScreen(navController: NavController) {
                         loading = false
                         if (task.isSuccessful) {
                             auth.currentUser?.sendEmailVerification()
-                            showSetMasterPasswordDialog = true
+                            // Hier: Warte auf Verifizierung mit Polling
+                            showVerificationWaiting = true
                             isNewUser = false
                         } else {
                             error = "Account creation failed: ${task.exception?.localizedMessage}"
@@ -124,249 +191,121 @@ fun LoginScreen(navController: NavController) {
             }
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .imePadding()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.Lock,
-            contentDescription = null,
-            tint = Color(0xFF6C63FF),
-            modifier = Modifier.size(64.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("SecureVault", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-        Text("Safe. Simple. Encrypted.", color = Color.Gray, fontSize = 16.sp)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(if (isNewUser) "Create Your Account" else "Login to Your Vault", fontSize = 20.sp, fontWeight = FontWeight.Medium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email Address") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        PasswordTextField(
-            label = "Password",
-            password = password,
-            onPasswordChange = { password = it }
-        )
-        if (isNewUser) {
-            Spacer(modifier = Modifier.height(8.dp))
-            PasswordTextField(
-                label = "Confirm Password",
-                password = confirmPassword,
-                onPasswordChange = { confirmPassword = it }
-            )
+    fun manualVerificationCheck() {
+        user?.reload()
+        isVerified = user?.isEmailVerified == true
+        if (isVerified) {
+            showSetMasterPasswordDialog = true
+            showVerificationWaiting = false
+            infoMessage = ""
+        } else {
+            infoMessage = context.getString(R.string.die_e_mail_adresse_wurde_noch_nicht_best_tigt_bitte_berpr_fen_sie_ihren_posteingang)
         }
+    }
 
-        if (error.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(error, color = Color.Red, fontSize = 14.sp)
+
+    VerificationPoller(
+        showVerificationWaiting = showVerificationWaiting,
+        user = user,
+        onVerified = {
+            showSetMasterPasswordDialog = true
+            showVerificationWaiting = false
+            infoMessage = ""
+        },
+        onNotVerified = {
+            infoMessage =
+                context.getString(R.string.die_e_mail_adresse_wurde_noch_nicht_best_tigt_bitte_berpr_fen_sie_ihren_posteingang)
         }
+    )
 
-        if (infoMessage.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(infoMessage, color = Color(0xFF388E3C), fontSize = 14.sp)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (isNewUser) handleCreateAccount() else handleLogin()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !loading
-        ) {
-            Text(if (isNewUser) "Create Account" else "Login")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(if (isNewUser) "Already registered?" else "New here?", color = Color.Gray)
-            Spacer(modifier = Modifier.width(8.dp))
-            TextButton(onClick = {
-                resetMessages()
-                isNewUser = !isNewUser
-                email = ""
-                password = ""
-                confirmPassword = ""
-            }) {
-                Text(if (isNewUser) "Login" else "Create Account")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            "Your data is encrypted and stored securely.\nOnly verified users can access the vault.",
-            fontSize = 12.sp,
-            color = Color.Gray,
-            lineHeight = 16.sp
+    if (showVerificationWaiting) {
+        VerificationWaitingScreen(
+            infoMessage = infoMessage,
+            onCheckNow = { manualVerificationCheck() }
         )
     }
+    LoginFormSection(
+        isVisible = !showBiometricPrompt,
+        isNewUser = isNewUser,
+        email = email,
+        password = password,
+        confirmPassword = confirmPassword,
+        error = error,
+        infoMessage = infoMessage,
+        loading = loading,
+        biometricEnabled = biometricEnabled,
+        hasPromptedBiometric = hasPromptedBiometric,
+        emailFocusRequester = emailFocusRequester,
+        passwordFocusRequester = passwordFocusRequester,
+        focusManager = focusManager,
+        onEmailChange = { email = it },
+        onPasswordChange = { password = it },
+        onConfirmPasswordChange = { confirmPassword = it },
+        onToggleUserMode = { isNewUser = !isNewUser },
+        onSubmit = {
+            if (isNewUser) handleCreateAccount() else handleLogin()
+        },
+        onTriggerBiometric = {
+            hasPromptedBiometric = true
+            showBiometricPrompt = true
+        },
+        resetMessages = { resetMessages() },
+        onGoogleSignInClick = {
+            GoogleAuthManager.launchGoogleSignIn(
+                context = context,
+                launcher = googleSignInLauncher,
+                isNewUser = isNewUser
+            )
+        },
+        googleButtonEnabled = !loading, // or true if always enabled
+        googleSignInLauncher = googleSignInLauncher
+
+    )
+
+    BiometricPromptWrapper(
+        show = showBiometricPrompt,
+        onSuccess = {
+            showBiometricPrompt = false
+            showMasterPasswordDialog = true
+        },
+        onError = {
+            error = it
+            showBiometricPrompt = false
+        }
+    )
+    MasterPasswordDialog(
+        show = showMasterPasswordDialog,
+        onDismiss = {
+            showMasterPasswordDialog = false
+            masterPasswordInput = ""
+        },
+        masterPasswordInput = masterPasswordInput,
+        onPasswordChange = { masterPasswordInput = it },
+        context = context,
+        navController = navController,
+        onVerified = {
+            showMasterPasswordDialog = false
+        }
+    )
+    SetMasterPasswordDialog(
+        show = showSetMasterPasswordDialog,
+        onDismiss = {
+            showSetMasterPasswordDialog = false
+        },
+        newPassword = newMasterPassword,
+        confirmPassword = confirmMasterPassword,
+        onNewPasswordChange = { newMasterPassword = it },
+        onConfirmPasswordChange = { confirmMasterPassword = it },
+        context = context,
+        auth = auth,
+        onSuccess = {
+            showSetMasterPasswordDialog = false
+            infoMessage = context.getString(R.string.die_angegebene_e_mail_adresse_wurde_erfolgreich_verifiziert)
+        },
+        onError = { error = it }
+    )
+
     if (loading) {
         LoadingIndicator()
     }
-    if (showMasterPasswordDialog) {
-        AlertDialog(
-            onDismissRequest = {},
-            title = { Text("Security Check") },
-            text = {
-                Column {
-                    Text("Enter your master password to proceed.")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    PasswordTextField(
-                        label = "Master Password",
-                        password = masterPasswordInput,
-                        onPasswordChange = { masterPasswordInput = it }
-                    )
-                }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    val user = auth.currentUser
-                    if (user != null) {
-                        VerifyMasterPassword(
-                            uid = user.uid,
-                            inputPassword = masterPasswordInput,
-                            onSuccess = {
-                                // ✅ Initialize repository inside PasswordStore
-                                PasswordStore.setAuthenticated(
-                                    context = context,
-                                    authenticated = true,
-                                    password = masterPasswordInput
-                                )
-                                // ✅ Load passwords immediately
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    PasswordStore.loadFromDatabase()
-                                }
-                                // Optional: Update last activity for auto logout
-                                InactivityManager.updateActivity()
-                                // Continue with navigation flow
-                                showMasterPasswordDialog = false
-                                showBiometricPrompt = true
-                            },
-                            onError = {
-                                error = it
-                                masterPasswordInput = ""
-                            }
-                        )
-                    }
-                }) {
-                    Text("Verify")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showMasterPasswordDialog = false
-                    masterPasswordInput = ""
-                }) {
-                    Text("Cancel")
-                }
-            },
-            containerColor = Color.White,
-            textContentColor = Color.Black,
-            titleContentColor = Color.Black,
-            shape = RoundedCornerShape(12.dp),
-            tonalElevation = 6.dp
-        )
-    }
-    if (showSetMasterPasswordDialog) {
-        AlertDialog(
-            onDismissRequest = {},
-            title = { Text("Set Master Password") },
-            text = {
-                Column {
-                    Text("Create your secure Master Password.")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    PasswordTextField(
-                        label = "Master Password",
-                        password = newMasterPassword,
-                        onPasswordChange = { newMasterPassword = it }
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    PasswordTextField(
-                        label = "Confirm Master Password",
-                        password = confirmMasterPassword,
-                        onPasswordChange = { confirmMasterPassword = it }
-                    )
-                }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    if (newMasterPassword == confirmMasterPassword && newMasterPassword.length >= 8) {
-                        val user = auth.currentUser
-                        if (user != null) {
-                            SaveMasterPasswordToFirestore(
-                                uid = user.uid,
-                                password = newMasterPassword,
-                                onSuccess = {
-                                    showSetMasterPasswordDialog = false
-                                    infoMessage = "Verification email sent. Please check your inbox."
-                                },
-                                onError = {
-                                    error = it
-                                }
-                            )
-                        }
-                    } else {
-                        error = "Passwords do not match or too short."
-                    }
-                }) {
-                    Text("Save")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showSetMasterPasswordDialog = false
-                }) {
-                    Text("Cancel")
-                }
-            },
-            containerColor = Color.White,
-            textContentColor = Color.Black,
-            titleContentColor = Color.Black,
-            shape = RoundedCornerShape(12.dp),
-            tonalElevation = 6.dp
-        )
-    }
-    //only show BiometricAuthPrompt if both are true
-    if (showBiometricPrompt) {
-            if (biometricEnabled) {
-                BiometricAuthPrompt(
-                    onAuthSuccess = {
-                        showBiometricPrompt = false
-                        navController.navigate("tabs") {
-                            popUpTo(0)
-                        }
-                    },
-                    onAuthError = { message ->
-                        error = message
-                        showBiometricPrompt = false
-                    }
-                )
-            } else {
-                // If biometrics disabled, just navigate immediately
-                showBiometricPrompt = false
-                navController.navigate("tabs") {
-                    popUpTo(0)
-                }
-            }
-        }
-
     }

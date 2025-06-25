@@ -1,11 +1,11 @@
-package com.bbg.securevault.data.local.interfaces
+package com.bbg.securevault.domain.local.interfaces
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.data.models.PasswordEntry
 
 /**
  * Created by Enoklit on 13.06.2025.
@@ -26,5 +26,8 @@ interface PasswordDao {
 
     @Query("SELECT * FROM passwords WHERE id = :id LIMIT 1")
     suspend fun getById(id: String): PasswordEntry?
+
+    @Query("SELECT * FROM passwords WHERE userId = :userId")
+    suspend fun getAllForUser(userId: String): List<PasswordEntry>
 
 }
