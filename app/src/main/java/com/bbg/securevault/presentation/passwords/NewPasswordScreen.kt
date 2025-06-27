@@ -1,37 +1,31 @@
 package com.bbg.securevault.presentation.passwords
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.bbg.securevault.domain.models.PasswordCategory
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.data.models.PasswordCategory
+import com.bbg.securevault.data.models.PasswordEntry
 import com.bbg.securevault.presentation.components.PasswordInput
 import com.bbg.securevault.presentation.components.PasswordStrengthIndicator
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import com.bbg.securevault.R
-import com.bbg.securevault.data.CategoryStorage
+import com.bbg.securevault.domain.CategoryStorage
+import com.bbg.securevault.domain.PasswordStore
 import com.bbg.securevault.presentation.components.CategorySelector
 import java.util.UUID
 
@@ -244,7 +238,8 @@ fun NewPasswordScreen(
                             customCategory = if (category == PasswordCategory.OTHER) customCategory else null,
                             favorite = passwordToEdit?.favorite ?: false,
                             createdAt = passwordToEdit?.createdAt ?: System.currentTimeMillis(),
-                            lastModified = System.currentTimeMillis()
+                            lastModified = System.currentTimeMillis(),
+                            userId = passwordToEdit?.userId ?: PasswordStore.currentUserId ?: ""
                         )
 
                         if (isEditing) {

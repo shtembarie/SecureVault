@@ -26,8 +26,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
-import com.bbg.securevault.data.PasswordStore
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.domain.PasswordStore
+import com.bbg.securevault.data.models.PasswordEntry
 import com.bbg.securevault.presentation.components.CustomButton
 import com.bbg.securevault.presentation.components.PasswordListItem
 
@@ -46,7 +46,6 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
 
     var searchQuery by remember { mutableStateOf(TextFieldValue()) }
     var showSearch by remember { mutableStateOf(false) }
-    //val passwords by remember { mutableStateOf(PasswordStore.passwords) }
     val passwords = PasswordStore.passwords
 
 

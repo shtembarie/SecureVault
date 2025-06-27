@@ -12,20 +12,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-import com.bbg.securevault.domain.models.PasswordCategory
+import com.bbg.securevault.data.models.PasswordCategory
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
-import com.bbg.securevault.data.CategoryStorage
+import com.bbg.securevault.domain.CategoryStorage
 import androidx.compose.foundation.combinedClickable
 
 
@@ -64,55 +62,58 @@ fun CategorySelector(
                     onClick = {
                         onCategorySelected(cat, null)
                         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        deleteMode = false  // Delete-Modus aus wenn andere Kategorie gewählt
+                        deleteMode = true  // Delete-Modus aus wenn andere Kategorie gewählt
                     },
                     label = { Text(cat.name.lowercase().replaceFirstChar { it.uppercase() }) }
                 )
             }
 
-            // Benutzerdefinierte Kategorien - zeigen Minus wenn deleteMode an
+            // Benutzerdefinierte Kategorien – zeigen Minus, wenn deleteMode an
             customCategories.forEach { cat ->
                 Box(
                     modifier = Modifier
-                        .combinedClickable(
-                            onClick = {
-                                onCategorySelected(PasswordCategory.OTHER, cat)
-                                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                deleteMode = false  // Delete-Modus aus beim normalen Klick
-                            },
-                            onLongClick = {
-                                deleteMode = true  // Delete-Modus an beim LongClick
-                            }
-                        )
+                        .padding(end = 12.dp) // ✅ Platz rechts schaffen für das Minus-Icon
+                        .wrapContentSize()    // ✅ Box passt sich an den Inhalt an
                 ) {
                     FilterChip(
                         selected = selectedCategory == PasswordCategory.OTHER && selectedCustomCategory == cat,
                         onClick = {
                             onCategorySelected(PasswordCategory.OTHER, cat)
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            deleteMode = true  // Delete-Modus aus beim normalen Klick
-                        }, // Klick wird oben behandelt
-
-                        label = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(cat)
-                                if (deleteMode) {
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Icon(
-                                        imageVector = Icons.Default.RemoveCircle,
-                                        contentDescription = "Kategorie löschen",
-                                        tint = Color.Red,
-                                        modifier = Modifier
-                                            .size(18.dp)
-                                            .clickable {
-                                                onDeleteCustomCategory(cat)
-                                                deleteMode = false  // Nach löschen Delete-Modus aus
-                                            }
-                                    )
+                            deleteMode = false  // Delete-Modus aus beim normalen Klick
+                        },
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    onCategorySelected(PasswordCategory.OTHER, cat)
+                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    deleteMode = true
+                                },
+                                onLongClick = {
+                                    deleteMode = true // ✅ Long-Klick aktiviert den Löschmodus
                                 }
-                            }
+                            ),
+                        label = {
+                            Text(cat)
                         }
                     )
+
+                    // ✅ Minus-Icon außerhalb des FilterChip, oben rechts überlagert
+                    if (deleteMode) {
+                        Icon(
+                            imageVector = Icons.Default.RemoveCircle,
+                            contentDescription = "Kategorie löschen",
+                            tint = Color.Red,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.TopEnd)
+                                .offset(x = 12.dp, y = (-1).dp) // ✅ Verschiebt das Icon leicht über den Rand
+                                .clickable {
+                                    onDeleteCustomCategory(cat)
+                                    deleteMode = true
+                                }
+                        )
+                    }
                 }
             }
 
@@ -126,16 +127,17 @@ fun CategorySelector(
                 modifier = Modifier.combinedClickable(
                     onClick = {
                         showAddDialog = true
-                        deleteMode = false
+                        deleteMode = true
                     },
                     onLongClick = {
-                        // Falls du willst, kann hier auch deleteMode an bei LongClick, z.B. zum Löschen aller Kategorien
+                        //deleteMode = true
                     }
                 ),
                 label = { Text("Add Category") }
             )
         }
     }
+
 
     // Dialog für neue Kategorie
     if (showAddDialog) {

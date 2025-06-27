@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
@@ -24,8 +23,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
-import com.bbg.securevault.domain.models.PasswordCategory
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.data.models.PasswordCategory
+import com.bbg.securevault.data.models.PasswordEntry
 import com.bbg.securevault.presentation.core.utils.InfoRow
 import java.text.DateFormat
 

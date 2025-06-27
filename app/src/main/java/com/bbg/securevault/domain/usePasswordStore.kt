@@ -1,13 +1,13 @@
-package com.bbg.securevault.data
+package com.bbg.securevault.domain
 
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.bbg.securevault.data.local.EncryptedPasswordDatabase
-import com.bbg.securevault.data.local.repository.PasswordRepository
-import com.bbg.securevault.domain.models.PasswordEntry
-import com.bbg.securevault.domain.models.PasswordGeneratorOptions
+import com.bbg.securevault.domain.local.EncryptedPasswordDatabase
+import com.bbg.securevault.domain.local.repository.PasswordRepository
+import com.bbg.securevault.data.models.PasswordEntry
+import com.bbg.securevault.data.models.PasswordGeneratorOptions
 import com.bbg.securevault.presentation.core.PasswordGenerator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,6 +21,8 @@ object PasswordStore {
     var isAuthenticated by mutableStateOf(false)
     var masterPassword: String? = null
 
+    // NEW: Store current logged-in user ID
+    var currentUserId: String? = null
     // Password list (für UI)
     var passwords by mutableStateOf(listOf<PasswordEntry>())
 
@@ -39,25 +41,30 @@ object PasswordStore {
     // Repository mit SQLCipher
     lateinit var repository: PasswordRepository
 
-    fun setAuthenticated(context: Context, authenticated: Boolean, password: String) {
+    fun setAuthenticated(context: Context, authenticated: Boolean, password: String, userId: String) {
         isAuthenticated = authenticated
         masterPassword = password
+        currentUserId = userId
         repository = PasswordRepository(
             EncryptedPasswordDatabase.getInstance(context, password)
         )
     }
 
     suspend fun loadFromDatabase() {
+        val userId = currentUserId ?: return
         passwords = withContext(Dispatchers.IO) {
-            repository.getAllPasswords()
+            //repository.getAllPasswords()
+            repository.getAllPasswordsUsers(userId)
         }
     }
 
     suspend fun addPassword(entry: PasswordEntry) {
+        val userId = currentUserId ?: return
         val newEntry = entry.copy(
             id = UUID.randomUUID().toString(),
             createdAt = System.currentTimeMillis(),
-            lastModified = System.currentTimeMillis()
+            lastModified = System.currentTimeMillis(),
+            userId = userId
         )
         withContext(Dispatchers.IO) {
             repository.insertPassword(newEntry)
@@ -66,9 +73,11 @@ object PasswordStore {
     }
 
     suspend fun updatePassword(id: String, updates: PasswordEntry) {
+        val userId = currentUserId ?: return
         val updated = updates.copy(
             id = id,
-            lastModified = System.currentTimeMillis()
+            lastModified = System.currentTimeMillis(),
+            userId = userId
         )
         withContext(Dispatchers.IO) {
             repository.insertPassword(updated)

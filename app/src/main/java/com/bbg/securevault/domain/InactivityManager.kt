@@ -1,9 +1,4 @@
-package com.bbg.securevault.data
-
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+package com.bbg.securevault.domain
 
 /**
  * Created by Enoklit on 12.06.2025.

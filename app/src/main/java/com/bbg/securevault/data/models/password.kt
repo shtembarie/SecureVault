@@ -1,4 +1,4 @@
-package com.bbg.securevault.domain.models
+package com.bbg.securevault.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -18,7 +18,8 @@ data class PasswordEntry(
     val customCategory: String? = null,
     val favorite: Boolean,
     val lastModified: Long, // timestamp in millis
-    val createdAt: Long // timestamp in millis
+    val createdAt: Long, // timestamp in millis
+    val userId: String
 )
 
 enum class PasswordCategory {

@@ -1,9 +1,9 @@
-package com.bbg.securevault.data.local
+package com.bbg.securevault.domain.local
 
 import android.content.Context
 import androidx.room.*
-import com.bbg.securevault.data.local.interfaces.PasswordDao
-import com.bbg.securevault.domain.models.PasswordEntry
+import com.bbg.securevault.domain.local.interfaces.PasswordDao
+import com.bbg.securevault.data.models.PasswordEntry
 import net.sqlcipher.database.SupportFactory
 /**
  * Created by Enoklit on 12.06.2025.
@@ -34,5 +34,10 @@ abstract class EncryptedPasswordDatabase : RoomDatabase() {
                 instance
             }
         }
+        @Synchronized
+        fun resetInstance() {
+            INSTANCE = null
+        }
+
     }
 }

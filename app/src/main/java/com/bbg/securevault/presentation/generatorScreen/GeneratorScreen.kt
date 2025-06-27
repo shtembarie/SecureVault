@@ -23,8 +23,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.bbg.securevault.R
-import com.bbg.securevault.data.PasswordStore
-import com.bbg.securevault.domain.models.PasswordGeneratorOptions
+import com.bbg.securevault.domain.PasswordStore
+import com.bbg.securevault.data.models.PasswordGeneratorOptions
 import com.bbg.securevault.presentation.components.ButtonSize
 import com.bbg.securevault.presentation.components.CustomButton
 import com.bbg.securevault.presentation.components.PasswordStrengthIndicator

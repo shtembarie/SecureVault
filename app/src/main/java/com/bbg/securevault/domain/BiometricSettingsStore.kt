@@ -1,4 +1,4 @@
-package com.bbg.securevault.data
+package com.bbg.securevault.domain
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
