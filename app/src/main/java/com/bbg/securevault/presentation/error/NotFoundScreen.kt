@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.bbg.securevault.R
 
 /**
  * Created by Enoklit on 05.06.2025.
@@ -45,7 +47,7 @@ fun NotFoundScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "This screen doesn't exist.",
+                text = stringResource(R.string.this_screen_doesn_t_exist),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -54,7 +56,7 @@ fun NotFoundScreen(navController: NavController) {
 
             TextButton(onClick = { navController.navigate("tabs") }) {
                 Text(
-                    text = "Go to home screen!",
+                    text = stringResource(R.string.go_to_home_screen),
                     fontSize = 14.sp,
                     color = Color(0xFF2e78b7)
                 )

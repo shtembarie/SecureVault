@@ -205,7 +205,7 @@ fun LoginFormSection(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.google_logo),
-                        contentDescription = "Google logo",
+                        contentDescription = stringResource(R.string.google_logo),
                         modifier = Modifier
                             .size(34.dp)
                             .padding(end = 8.dp)

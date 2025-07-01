@@ -1,6 +1,7 @@
 package com.bbg.securevault.presentation.passwords.masterPassword
 
 import android.util.Base64
+import com.bbg.securevault.R
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**

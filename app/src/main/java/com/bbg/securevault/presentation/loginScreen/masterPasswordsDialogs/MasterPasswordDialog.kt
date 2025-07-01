@@ -8,8 +8,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bbg.securevault.R
 import com.bbg.securevault.domain.InactivityManager
 import com.bbg.securevault.domain.PasswordStore
 import com.bbg.securevault.presentation.passwords.PasswordTextField
@@ -34,13 +36,13 @@ fun MasterPasswordDialog(
 
     AlertDialog(
         onDismissRequest = {},
-        title = { Text("Security Check") },
+        title = { Text(stringResource(R.string.security_check)) },
         text = {
             Column {
-                Text("Enter your master password to proceed.")
+                Text(stringResource(R.string.enter_your_master_password_to_proceed))
                 Spacer(modifier = Modifier.height(8.dp))
                 PasswordTextField(
-                    label = "Master Password",
+                    label = stringResource(R.string.master_password),
                     password = masterPasswordInput,
                     onPasswordChange = onPasswordChange
                 )
@@ -62,12 +64,12 @@ fun MasterPasswordDialog(
                 onVerified()
                 navController.navigate("tabs") { popUpTo(0) }
             }) {
-                Text("Verify")
+                Text(stringResource(R.string.verify))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.abbrechen))
             }
         },
         containerColor = Color.White,

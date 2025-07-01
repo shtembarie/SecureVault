@@ -3,7 +3,7 @@ package com.bbg.securevault.presentation.core.utils
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.widget.Toast
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bbg.securevault.R
+import androidx.annotation.RequiresApi
 
 /**
  * Created by Enoklit on 13.06.2025.
  */
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun InfoRow(
     label: String,
@@ -59,7 +63,7 @@ fun InfoRow(
         if (toggleable && onToggle != null) {
             IconButton(onClick = onToggle) {
                 // Use toggleIcon if available, otherwise default
-                Icon(toggleIcon ?: Icons.Default.Visibility, contentDescription = "Toggle Visibility")
+                Icon(toggleIcon ?: Icons.Default.Visibility, contentDescription = stringResource(R.string.toggle_visibility))
             }
         }
         if (copyable) {
@@ -70,15 +74,20 @@ fun InfoRow(
                 val textToCopy = actualCopyValue ?: value
 
                 clipboard.setPrimaryClip(ClipData.newPlainText(label, textToCopy))
-                Toast.makeText(context, "$label copied", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context,
+                    //context.getString(R.string.copied, label), Toast.LENGTH_SHORT).show()
             }) {
-                Icon(Icons.Default.ContentCopy, contentDescription = "Copy $label")
+                Icon(Icons.Default.ContentCopy, contentDescription = stringResource(
+                    R.string.copy,
+                    label
+                ))
             }
         }
 
+
         if (trailingIcon != null && onTrailingIconClick != null) {
             IconButton(onClick = onTrailingIconClick) {
-                Icon(trailingIcon, contentDescription = "Open $label")
+                Icon(trailingIcon, contentDescription = stringResource(R.string.open, label))
             }
         }
 

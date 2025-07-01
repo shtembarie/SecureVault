@@ -1,5 +1,6 @@
 package com.bbg.securevault.presentation.tabs
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
@@ -27,6 +29,7 @@ import kotlinx.coroutines.launch
 
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController) {
@@ -41,7 +44,7 @@ fun MainScreen(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = currentScreen.label) },
+                    title = { Text(text = stringResource(id = currentScreen.label)) },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = colorResource(R.color.background),
                         scrolledContainerColor = colorResource(R.color.background),
@@ -54,7 +57,7 @@ fun MainScreen(navController: NavController) {
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "Add Password",
+                                    contentDescription = stringResource(R.string.add_password),
                                     tint = colorResource(R.color.primary)
                                 )
                             }
@@ -69,8 +72,8 @@ fun MainScreen(navController: NavController) {
                 ) {
                     items.forEach { item ->
                         NavigationBarItem(
-                            icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
-                            label = { Text(text = item.label) },
+                            icon = { Icon(imageVector = item.icon, contentDescription = stringResource(id = item.label)) },
+                            label = { Text(text = stringResource(id = item.label)) },
                             selected = currentScreen.route == item.route,
                             onClick = { currentScreen = item },
                             colors = NavigationBarItemDefaults.colors(

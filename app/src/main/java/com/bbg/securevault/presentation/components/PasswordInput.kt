@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import com.bbg.securevault.R
@@ -50,7 +51,9 @@ fun PasswordInput(
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-            val description = if (passwordVisible) "Hide password" else "Show password"
+            val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                R.string.show_password
+            )
 
             Icon(
                 imageVector = icon,
