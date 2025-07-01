@@ -15,6 +15,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.res.stringResource
+import com.bbg.securevault.R
+
 /**
  * Created by Enoklit on 05.06.2025.
  */
@@ -38,7 +41,7 @@ fun ModalScreen() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Modal",
+                text = stringResource(R.string.modal),
                 fontSize = 20.sp,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -56,7 +59,7 @@ fun ModalScreen() {
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
-                text = "This is an example modal. You can edit it in app/modal.tsx.",
+                text = stringResource(R.string.this_is_an_example_modal_you_can_edit_it_in_app_modal_tsx),
                 color = MaterialTheme.colorScheme.onBackground
             )
         }

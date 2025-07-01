@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -51,7 +52,10 @@ fun PasswordListItem(
     ) {
         Row(
             modifier = Modifier
-                .background(color = colorResource(R.color.primary).copy(alpha = 0.08f), shape = RoundedCornerShape(4.dp))
+                .background(
+                    color = colorResource(R.color.primary).copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(4.dp)
+                )
                 .padding(horizontal = 8.dp, vertical = 2.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -75,7 +79,7 @@ fun PasswordListItem(
                     }) {
                         Icon(
                             imageVector = if (password.favorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                            contentDescription = "Toggle Favorite",
+                            contentDescription = stringResource(R.string.toggle_favorite),
                             tint = if (password.favorite) colorResource(R.color.accent) else colorResource(R.color.textSecondary)
                         )
                     }
@@ -95,9 +99,9 @@ fun PasswordListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .background(
-                        color = colorResource(R.color.primary).copy(alpha = 0.08f),
-                        shape = RoundedCornerShape(4.dp)
-                    )
+                            color = colorResource(R.color.primary).copy(alpha = 0.08f),
+                            shape = RoundedCornerShape(4.dp)
+                        )
                         .padding(horizontal = 8.dp, vertical = 2.dp)
 
                 ) {
@@ -116,13 +120,13 @@ fun PasswordListItem(
                     onClick = {
                         coroutineScope.launch {
                             onCopyUsername?.invoke()
-                            toast(context, "Username copied")
+                            //toast(context, context.getString(R.string.username_copied))
                         }
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.ContentCopy,
-                        contentDescription = "Copy Username",
+                        contentDescription = stringResource(R.string.copy_username),
                         tint = colorResource(R.color.textSecondary)
                     )
                 }
@@ -131,13 +135,13 @@ fun PasswordListItem(
                     onClick = {
                         coroutineScope.launch {
                             onCopyPassword?.invoke()
-                            toast(context, "Password copied")
+                            //toast(context, context.getString(R.string.password_copied))
                         }
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.OpenInNew,
-                        contentDescription = "Copy Password",
+                        contentDescription = stringResource(R.string.copy_password),
                         tint = colorResource(R.color.textSecondary)
                     )
                 }

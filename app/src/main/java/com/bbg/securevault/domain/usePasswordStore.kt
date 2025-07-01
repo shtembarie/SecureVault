@@ -113,5 +113,14 @@ object PasswordStore {
         masterPassword = null
         passwords = emptyList()
     }
+    fun reset() {
+        isAuthenticated = false
+        masterPassword = null
+        currentUserId = null
+        passwords = emptyList()
+        // DB Instanz zurücksetzen
+        EncryptedPasswordDatabase.resetInstance()
+    }
+
 }
 

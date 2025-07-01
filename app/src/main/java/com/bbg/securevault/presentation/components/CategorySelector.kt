@@ -25,8 +25,8 @@ import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
 import com.bbg.securevault.domain.CategoryStorage
 import androidx.compose.foundation.combinedClickable
-
-
+import androidx.compose.ui.res.stringResource
+import com.bbg.securevault.R
 
 
 /**
@@ -72,8 +72,8 @@ fun CategorySelector(
             customCategories.forEach { cat ->
                 Box(
                     modifier = Modifier
-                        .padding(end = 12.dp) // ✅ Platz rechts schaffen für das Minus-Icon
-                        .wrapContentSize()    // ✅ Box passt sich an den Inhalt an
+                        .padding(end = 12.dp) //  Platz rechts schaffen für das Minus-Icon
+                        .wrapContentSize()    //  Box passt sich an den Inhalt an
                 ) {
                     FilterChip(
                         selected = selectedCategory == PasswordCategory.OTHER && selectedCustomCategory == cat,
@@ -90,7 +90,7 @@ fun CategorySelector(
                                     deleteMode = true
                                 },
                                 onLongClick = {
-                                    deleteMode = true // ✅ Long-Klick aktiviert den Löschmodus
+                                    deleteMode = true // Long-Klick aktiviert den Löschmodus
                                 }
                             ),
                         label = {
@@ -98,16 +98,16 @@ fun CategorySelector(
                         }
                     )
 
-                    // ✅ Minus-Icon außerhalb des FilterChip, oben rechts überlagert
+                    // Minus-Icon außerhalb des FilterChip, oben rechts überlagert
                     if (deleteMode) {
                         Icon(
                             imageVector = Icons.Default.RemoveCircle,
-                            contentDescription = "Kategorie löschen",
+                            contentDescription = stringResource(R.string.kategorie_l_schen),
                             tint = Color.Red,
                             modifier = Modifier
                                 .size(20.dp)
                                 .align(Alignment.TopEnd)
-                                .offset(x = 12.dp, y = (-1).dp) // ✅ Verschiebt das Icon leicht über den Rand
+                                .offset(x = 12.dp, y = (-1).dp) // Verschiebt das Icon leicht über den Rand
                                 .clickable {
                                     onDeleteCustomCategory(cat)
                                     deleteMode = true
@@ -133,7 +133,7 @@ fun CategorySelector(
                         //deleteMode = true
                     }
                 ),
-                label = { Text("Add Category") }
+                label = { Text(stringResource(R.string.add_category)) }
             )
         }
     }
@@ -143,12 +143,12 @@ fun CategorySelector(
     if (showAddDialog) {
         AlertDialog(
             onDismissRequest = { showAddDialog = false },
-            title = { Text("Neue Kategorie") },
+            title = { Text(stringResource(R.string.new_categorie)) },
             text = {
                 OutlinedTextField(
                     value = newCategoryName,
                     onValueChange = { newCategoryName = it },
-                    label = { Text("Kategorie Name") },
+                    label = { Text(stringResource(R.string.category_name)) },
                     singleLine = true
                 )
             },
@@ -161,7 +161,7 @@ fun CategorySelector(
                         showAddDialog = false
                     }
                 }) {
-                    Text("Hinzufügen")
+                    Text(stringResource(R.string.add))
                 }
             },
             dismissButton = {
@@ -169,7 +169,7 @@ fun CategorySelector(
                     newCategoryName = ""
                     showAddDialog = false
                 }) {
-                    Text("Abbrechen")
+                    Text(stringResource(R.string.abbrechen))
                 }
             }
         )

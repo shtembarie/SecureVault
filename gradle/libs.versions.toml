@@ -40,6 +40,7 @@ ksp = "2.0.0-1.0.21"
 foundationLayoutAndroid = "1.7.2"
 playServicesAuth = "21.3.0"
 playServicesFido = "20.0.1"
+security-crypto = "1.1.0-alpha06"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
@@ -96,6 +97,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 play-services-fido = { group = "com.google.android.gms", name = "play-services-fido", version.ref = "playServicesFido" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

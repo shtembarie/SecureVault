@@ -32,8 +32,12 @@ import com.bbg.securevault.presentation.settingScreen.cards.Section
 import com.bbg.securevault.presentation.settingScreen.cards.SettingItem
 import com.bbg.securevault.presentation.settingScreen.cards.ToggleItem
 import com.bbg.securevault.presentation.settingScreen.functions.ChangeMasterPasswordDialog
+import com.bbg.securevault.shared.ui.NotificationBanner
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import com.bbg.securevault.data.models.NotificationType
+import kotlinx.coroutines.delay
+
 
 /**
  * Created by Enoklit on 04.06.2025.
@@ -51,20 +55,34 @@ fun SettingsScreen(
     var showBiometricPrompt by remember { mutableStateOf(false) }
     var pendingToggleValue by remember { mutableStateOf(biometricEnabled) } // we store the intent
     var biometricError by remember { mutableStateOf<String?>(null) }
+    var showBanner by remember { mutableStateOf(false) }
+    var bannerType by remember { mutableStateOf(NotificationType.ERROR) }
+    var bannerTitle by remember { mutableStateOf("") }
+    var bannerMessage by remember { mutableStateOf("") }
 
 
+
+    // Auto-close after 5 seconds
+    LaunchedEffect(showBanner) {
+        if (showBanner) {
+            delay(5000)
+            showBanner = false
+        }
+    }
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .background(Color.White)
         .padding(16.dp)) {
 
+
+
         item {
             Section(title = "Security") {
             SettingItem(
                 icon = { Icon(Icons.Default.Lock, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Change Master Password",
-                subtitle = "Update your master password",
+                title = stringResource(R.string.change_master_password),
+                subtitle = stringResource(R.string.update_your_master_password),
                 onClick = { showChangePasswordDialog = true }
             )
             if (showChangePasswordDialog) {
@@ -80,8 +98,8 @@ fun SettingsScreen(
                     icon = {
                         Icon(Icons.Default.Fingerprint, contentDescription = null, tint = colorResource(R.color.primary))
                     },
-                    title = "Biometric Authentication",
-                    subtitle = "Use fingerprint or face ID to unlock",
+                    title = stringResource(R.string.biometric_authentication),
+                    subtitle = stringResource(R.string.use_fingerprint_or_face_id_to_unlock),
                     value = biometricEnabled,
                     onToggle = {
                         // First trigger biometric prompt
@@ -104,25 +122,41 @@ fun SettingsScreen(
                         }
                     )
                 }
-                biometricError?.let {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(it, color = Color.Red, fontSize = 12.sp)
+                if (showBanner) {
+                    NotificationBanner(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        type = bannerType,
+                        title = bannerTitle,
+                        message = bannerMessage,
+                        onClose = { showBanner = false }
+                    )
                 }
+                biometricError?.let {
+                    // trigger banner
+                    bannerType = NotificationType.ERROR
+                    bannerTitle = stringResource(R.string.biometric_errors)
+                    bannerMessage = it
+                    showBanner = true
+                    biometricError = null // reset so it doesn't repeat
+                }
+
+
 
 
 
                 SettingItem(
                 icon = { Icon(Icons.Default.Shield, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Security Audit",
-                subtitle = "Check for weak or reused passwords",
+                title = stringResource(R.string.security_audit),
+                subtitle = stringResource(R.string.check_for_weak_or_reused_passwords),
                 onClick = { showNotImplemented(context) }
             )
         }
-
-        Section(title = "Preferences") {
+            Section(title = "Preferences") {
             ToggleItem(
                 icon = { Icon(Icons.Default.DarkMode, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Dark Mode",
+                title = stringResource(R.string.dark_mode),
                 subtitle = stringResource(R.string.switch_between_light_and_dark_theme),
                 value = false,
                 onToggle = { showNotImplemented(context) }
@@ -130,56 +164,52 @@ fun SettingsScreen(
 
             ToggleItem(
                 icon = { Icon(Icons.Default.Notifications, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Notifications",
-                subtitle = "Enable password breach alerts",
+                title = stringResource(R.string.notifications),
+                subtitle = stringResource(R.string.enable_password_breach_alerts),
                 value = true,
                 onToggle = { showNotImplemented(context) }
             )
         }
-
-        Section(title = "Data Management") {
+            Section(title = stringResource(R.string.data_management)) {
             SettingItem(
                 icon = { Icon(Icons.Default.Download, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Export Passwords",
-                subtitle = "Export your passwords as an encrypted file",
+                title = stringResource(R.string.export_passwords),
+                subtitle = stringResource(R.string.export_your_passwords_as_an_encrypted_file),
                 onClick = { showNotImplemented(context) }
             )
 
             SettingItem(
                 icon = { Icon(Icons.Default.Upload, contentDescription = null, tint = colorResource(R.color.primary)) },
-                title = "Import Passwords",
-                subtitle = "Import passwords from another manager",
+                title = stringResource(R.string.import_passwords),
+                subtitle = stringResource(R.string.import_passwords_from_another_manager),
                 onClick = { showNotImplemented(context) }
             )
 
             SettingItem(
                 icon = { Icon(Icons.Default.Delete, contentDescription = null, tint = colorResource(R.color.danger)) },
-                title = "Delete All Data",
-                subtitle = "Permanently delete all passwords",
+                title = stringResource(R.string.delete_all_data),
+                subtitle = stringResource(R.string.permanently_delete_all_passwords),
                 onClick = { showNotImplemented(context) },
                 destructive = true
             )
         }
-
-        Section(title = "Account") {
+            Section(title = stringResource(R.string.account)) {
             SettingItem(
                 icon = { Icon(Icons.Default.Logout, contentDescription = null, tint = colorResource(R.color.danger)) },
-                title = "Logout",
-                subtitle = "Log out of your account",
+                title = stringResource(R.string.logout),
+                subtitle = stringResource(R.string.log_out_of_your_account),
                 onClick = logout,
                 destructive = true
             )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-            Text("SecureVault v1.0.0", fontSize = 14.sp, color = colorResource(R.color.textSecondary))
-            Text("© 2025 SecureVault", fontSize = 12.sp, color = colorResource(R.color.textSecondary))
+            Spacer(modifier = Modifier.height(32.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.securevault_v1_0_0), fontSize = 14.sp, color = colorResource(R.color.textSecondary))
+            Text(stringResource(R.string._2025_securevault), fontSize = 12.sp, color = colorResource(R.color.textSecondary))
         }
     }
     }
 }
 fun showNotImplemented(context: android.content.Context) {
-    Toast.makeText(context, "Not implemented in demo", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.not_implemented_in_demo), Toast.LENGTH_SHORT).show()
 }

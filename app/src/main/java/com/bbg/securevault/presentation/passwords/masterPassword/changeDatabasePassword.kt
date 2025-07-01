@@ -1,6 +1,7 @@
 package com.bbg.securevault.presentation.passwords.masterPassword
 
 import android.content.Context
+import com.bbg.securevault.R
 
 /**
  * Created by Enoklit on 25.06.2025.
@@ -26,6 +27,6 @@ fun changeDatabasePassword(
         oldDb.close()
         onSuccess()
     } catch (e: Exception) {
-        onError("Database password change failed: ${e.message}")
+        onError(context.getString(R.string.database_password_change_failed, e.message))
     }
 }

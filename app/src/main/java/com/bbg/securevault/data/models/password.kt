@@ -44,3 +44,6 @@ enum class PasswordStrength {
     MEDIUM,
     STRONG
 }
+enum class NotificationType {
+    SUCCESS, INFO, WARNING, ERROR
+}
