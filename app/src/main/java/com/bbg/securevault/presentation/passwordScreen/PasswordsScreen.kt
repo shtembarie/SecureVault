@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
+import com.bbg.securevault.data.models.PasswordCategory
 import com.bbg.securevault.domain.PasswordStore
 import com.bbg.securevault.data.models.PasswordEntry
 import com.bbg.securevault.presentation.components.CustomButton
@@ -162,19 +163,31 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
                     }
                 }
             } else {
-                items(filtered, key = { it.id }) { password ->
-                    PasswordListItem(
-                        password = password,
-                        navController = navController,
-                        onCopyUsername = {
-                            clipboardManager.setText(AnnotatedString(password.username))
-                            Toast.makeText(context, "Username copied", Toast.LENGTH_SHORT).show()
-                        },
-                        onCopyPassword = {
-                            clipboardManager.setText(AnnotatedString(password.password))
-                            Toast.makeText(context, "Password copied", Toast.LENGTH_SHORT).show()
-                        }
-                    )
+                val grouped = filtered.groupBy { entry ->
+                    when (entry.category) {
+                        PasswordCategory.OTHER -> entry.customCategory ?: "Other"
+                        else -> entry.category.name
+                    }
+                }
+
+                grouped.forEach { (categoryName, passwordsInGroup) ->
+                    item {
+                        Text(
+                            text = categoryName,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = colorResource(R.color.text),
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+
+                    items(passwordsInGroup, key = { it.id }) { password ->
+                        PasswordListItem(
+                            password = password,
+                            navController = navController,
+                            onCopyUsername = { clipboardManager.setText(AnnotatedString(password.username)) },
+                            onCopyPassword = { clipboardManager.setText(AnnotatedString(password.password)) }
+                        )
+                    }
                 }
             }
         }

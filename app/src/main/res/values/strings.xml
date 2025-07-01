@@ -15,11 +15,13 @@
     <string name="e_mail_adresse">E-Mail-Adresse</string>
     <string name="passwort">Passwort</string>
     <string name="passwort_best_tigen">Passwort bestätigen</string>
-    <string name="konto_erstellen">Mit E-Mail registrieren</string>
-    <string name="anmelden">Mit E-Mail anmelden</string>
+    <string name="konto_erstellen">Konto erstellen</string>
+    <string name="anmelden">Anmelden</string>
     <string name="registrieren_mit_google">mit Google registrieren</string>
     <string name="anmelden_mit_google">Mit Google anmelden</string>
     <string name="bereits_registriert">Bereits registriert?</string>
     <string name="neu_hier">Noch kein Konto?</string>
     <string name="web_client_id">54899465948-nvuj9fgvgc2p2rjpbemau6fkqnr49ii1.apps.googleusercontent.com</string>
+    <string name="bitte_geben_sie_sowohl_die_e_mail_adresse_als_auch_das_passwort_ein">Bitte geben Sie sowohl die E-Mail-Adresse als auch das Passwort ein</string>
+    <string name="e_mail_nicht_verifiziert_bitte_berpr_fen_sie_ihren_posteingang">E-Mail nicht verifiziert. Bitte überprüfen Sie Ihren Posteingang.</string>
 </resources>

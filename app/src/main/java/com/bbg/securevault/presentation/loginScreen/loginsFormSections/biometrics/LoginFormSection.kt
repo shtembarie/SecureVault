@@ -158,26 +158,19 @@ fun LoginFormSection(
             onClick = onSubmit,
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(elevation = 4.dp, shape = RoundedCornerShape(6.dp)),
+                .shadow(elevation = 0.dp, shape = RoundedCornerShape(24.dp)),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
+                containerColor = Color(0xFF6C63FF),
+                contentColor = Color.White
             ),
             enabled = !loading,
-            shape = RoundedCornerShape(8.dp),
-            border = BorderStroke(1.dp, Color.LightGray)
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(0.dp, Color.LightGray)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.gmail_neu),
-                    contentDescription = "Gmail logo",
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 8.dp)
-                )
                 Text(
                     text = if (isNewUser) stringResource(R.string.konto_erstellen) else stringResource(R.string.anmelden),
                     fontSize = 16.sp,

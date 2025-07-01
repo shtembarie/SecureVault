@@ -133,7 +133,8 @@ fun LoginScreen(navController: NavController) {
         resetMessages()
 
         if (email.isBlank() || password.isBlank()) {
-            error = "Please enter both email and password"
+            error =
+                context.getString(R.string.bitte_geben_sie_sowohl_die_e_mail_adresse_als_auch_das_passwort_ein)
             return
         }
 
@@ -147,7 +148,8 @@ fun LoginScreen(navController: NavController) {
                     if (user?.isEmailVerified == true) {
                         showMasterPasswordDialog = true
                     } else {
-                        error = "Email not verified. Please check your inbox."
+                        error =
+                            context.getString(R.string.e_mail_nicht_verifiziert_bitte_berpr_fen_sie_ihren_posteingang)
                     }
                 } else {
                     error = "Login failed: ${task.exception?.localizedMessage}"
