@@ -23,6 +23,7 @@ import com.bbg.securevault.data.models.PasswordEntry
 import com.bbg.securevault.presentation.components.PasswordInput
 import com.bbg.securevault.presentation.components.PasswordStrengthIndicator
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import com.bbg.securevault.R
 import com.bbg.securevault.domain.CategoryStorage
 import com.bbg.securevault.domain.PasswordStore
@@ -84,10 +85,13 @@ fun NewPasswordScreen(
         containerColor = colorResource(R.color.background),
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditing) "Edit Password" else "New Password") },
+                title = { Text(if (isEditing) stringResource(R.string.edit_password) else stringResource(
+                    R.string.new_password
+                )
+                ) },
                 actions = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.Red)
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.abbrechen), tint = Color.Red)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -107,8 +111,8 @@ fun NewPasswordScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
-                placeholder = { Text("e.g. Gmail, Netflix, Bank") },
+                label = { Text(stringResource(R.string.title)) },
+                placeholder = { Text(stringResource(R.string.e_g_gmail_netflix_bank)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -117,8 +121,8 @@ fun NewPasswordScreen(
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username / Email") },
-                placeholder = { Text("username@example.com") },
+                label = { Text(stringResource(R.string.username_email)) },
+                placeholder = { Text(stringResource(R.string.username_example_com)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
@@ -129,14 +133,14 @@ fun NewPasswordScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Password", style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.passwort), style = MaterialTheme.typography.bodyMedium)
                 TextButton(onClick = {
                     password = generatePassword()
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 }) {
                     Icon(Icons.Default.Refresh, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Generate")
+                    Text(stringResource(R.string.generate))
                 }
             }
 
@@ -148,15 +152,15 @@ fun NewPasswordScreen(
             OutlinedTextField(
                 value = url,
                 onValueChange = { url = it },
-                label = { Text("Website URL (optional)") },
-                placeholder = { Text("https://example.com") },
+                label = { Text(stringResource(R.string.website_url_optional)) },
+                placeholder = { Text(stringResource(R.string.https_example_com)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Category", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.category), style = MaterialTheme.typography.bodyMedium)
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -188,35 +192,16 @@ fun NewPasswordScreen(
                 )
             }
 
-//            FlowRow(
-//                horizontalArrangement = Arrangement.spacedBy(8.dp),
-//                verticalArrangement = Arrangement.spacedBy(8.dp),
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                categories.forEach { cat ->
-//                    FilterChip(
-//                        selected = category == cat,
-//                        onClick = {
-//                            category = cat
-//                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-//                        },
-//                        label = {
-//                            Text(cat.name.lowercase().replaceFirstChar { it.uppercase() })
-//                        }
-//                    )
-//                }
-//            }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
-                label = { Text("Notes (optional)") },
+                label = { Text(stringResource(R.string.notes_optional)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
-                placeholder = { Text("Add any additional information here") },
+                placeholder = { Text(stringResource(R.string.add_any_additional_information_here)) },
                 maxLines = 4
             )
 
@@ -225,7 +210,8 @@ fun NewPasswordScreen(
             Button(
                 onClick = {
                     if (title.isBlank() || username.isBlank() || password.isBlank()) {
-                        Toast.makeText(context, "All required fields must be filled", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.all_required_fields_must_be_filled), Toast.LENGTH_SHORT).show()
                     } else {
                         val entry = PasswordEntry(
                             id = passwordToEdit?.id ?: UUID.randomUUID().toString(),
@@ -254,7 +240,7 @@ fun NewPasswordScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (isEditing) "Update Password" else "Save Password")
+                Text(if (isEditing) stringResource(R.string.update_password) else stringResource(R.string.save_password))
             }
         }
     }

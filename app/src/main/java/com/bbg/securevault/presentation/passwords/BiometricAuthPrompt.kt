@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import com.bbg.securevault.R
+
 /**
  * Created by Enoklit on 10.06.2025.
  */
@@ -26,9 +28,9 @@ fun BiometricAuthPrompt(
     LaunchedEffect(Unit) {
         val executor = ContextCompat.getMainExecutor(context)
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Fingerprint Authentication")
-            .setSubtitle("Authenticate to access your vault")
-            .setNegativeButtonText("Cancel")
+            .setTitle(context.getString(R.string.fingerprint_authentication))
+            .setSubtitle(context.getString(R.string.authenticate_to_access_your_vault))
+            .setNegativeButtonText(context.getString(R.string.abbrechen))
             .build()
 
         val biometricPrompt = BiometricPrompt(activity, executor,
@@ -40,12 +42,12 @@ fun BiometricAuthPrompt(
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    onAuthError("Authentication error: $errString")
+                    onAuthError(context.getString(R.string.authentication_error, errString))
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    onAuthError("Fingerprint not recognized. Try again.")
+                    onAuthError(context.getString(R.string.fingerprint_not_recognized_try_again))
                 }
             })
 

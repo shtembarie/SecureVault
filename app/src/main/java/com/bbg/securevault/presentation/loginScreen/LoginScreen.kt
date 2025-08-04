@@ -85,11 +85,11 @@ fun LoginScreen(navController: NavController) {
                         googleUserEmail = currentUser.email
                         checkedMasterPassword = false // Reset für neue Prüfung
                     } else {
-                        error = "Fehler beim Lesen der Nutzer-Email"
+                        error = context.getString(R.string.fehler_beim_lesen_der_nutzer_email)
                     }
                 },
                 onError = {
-                    // ❌ Handle error
+                    // Handle error
                     Log.e("Login", "Google Sign-In error: $it")
                 }
             )
@@ -117,7 +117,7 @@ fun LoginScreen(navController: NavController) {
                     }
                 )
             } else {
-                error = "User nicht eingeloggt"
+                error = context.getString(R.string.user_nicht_eingeloggt)
                 checkedMasterPassword = true
             }
         }
@@ -152,7 +152,8 @@ fun LoginScreen(navController: NavController) {
                             context.getString(R.string.e_mail_nicht_verifiziert_bitte_berpr_fen_sie_ihren_posteingang)
                     }
                 } else {
-                    error = "Login failed: ${task.exception?.localizedMessage}"
+                    error =
+                        context.getString(R.string.login_failed, task.exception?.localizedMessage)
                 }
             }
     }
@@ -161,19 +162,19 @@ fun LoginScreen(navController: NavController) {
 
         when {
             email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
-                error = "All fields are required"
+                error = context.getString(R.string.all_fields_are_required)
                 return
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() -> {
-                error = "Invalid email format"
+                error = context.getString(R.string.invalid_email_format)
                 return
             }
             password.length < 8 -> {
-                error = "Password must be at least 8 characters"
+                error = context.getString(R.string.password_must_be_at_least_8_characters)
                 return
             }
             password != confirmPassword -> {
-                error = "Passwords do not match"
+                error = context.getString(R.string.passwords_do_not_match)
                 return
             }
             else -> {
@@ -187,7 +188,10 @@ fun LoginScreen(navController: NavController) {
                             showVerificationWaiting = true
                             isNewUser = false
                         } else {
-                            error = "Account creation failed: ${task.exception?.localizedMessage}"
+                            error = context.getString(
+                                R.string.account_creation_failed,
+                                task.exception?.localizedMessage
+                            )
                         }
                     }
             }

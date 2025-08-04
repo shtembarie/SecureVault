@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.bbg.securevault.R
@@ -50,7 +51,8 @@ fun GeneratorScreen() {
 
     fun handleCopy() {
         clipboardManager.setText(AnnotatedString(password))
-        Toast.makeText(context, "Password copied to clipboard", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context,
+            //context.getString(R.string.password_copied_to_clipboard), Toast.LENGTH_SHORT).show()
     }
 
     fun handleLengthChange(newLength: Int) {
@@ -72,7 +74,8 @@ fun GeneratorScreen() {
         ).count { it }
 
         if (typesEnabled == 0) {
-            Toast.makeText(context, "At least one character type must be enabled.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(R.string.at_least_one_character_type_must_be_enabled), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -108,8 +111,8 @@ fun GeneratorScreen() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    CustomButton(title = "Copy", onClick = { handleCopy() }, fullWidth = false)
-                    CustomButton(title = "Regenerate", onClick = { generateNewPassword() }, fullWidth = false)
+                    CustomButton(title = stringResource(R.string.copy), onClick = { handleCopy() }, fullWidth = false)
+                    CustomButton(title = stringResource(R.string.regenerate), onClick = { generateNewPassword() }, fullWidth = false)
                 }
             }
         }
@@ -117,7 +120,7 @@ fun GeneratorScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Length
-        Text("Password Length: $passwordLength", color = colorResource(R.color.text), style = MaterialTheme.typography.titleSmall)
+        Text(stringResource(R.string.password_length, passwordLength), color = colorResource(R.color.text), style = MaterialTheme.typography.titleSmall)
 
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 16.dp)) {
             IconButton(onClick = { handleLengthChange(passwordLength - 1) }, enabled = passwordLength > 8) {
@@ -128,7 +131,9 @@ fun GeneratorScreen() {
                 value = passwordLength.toFloat(),
                 onValueChange = { handleLengthChange(it.toInt()) },
                 valueRange = 8f..64f,
-                modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 12.dp),
                 steps = 56
             )
 
@@ -140,30 +145,30 @@ fun GeneratorScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Toggles
-        ToggleItem("Uppercase Letters (A-Z)", generatorOptions.includeUppercase) {
+        ToggleItem(stringResource(R.string.uppercase_letters_a_z), generatorOptions.includeUppercase) {
             updateToggle { copy(includeUppercase = !includeUppercase) }
         }
 
-        ToggleItem("Lowercase Letters (a-z)", generatorOptions.includeLowercase) {
+        ToggleItem(stringResource(R.string.lowercase_letters_a_z), generatorOptions.includeLowercase) {
             updateToggle { copy(includeLowercase = !includeLowercase) }
         }
 
-        ToggleItem("Numbers (0-9)", generatorOptions.includeNumbers) {
+        ToggleItem(stringResource(R.string.numbers_0_9), generatorOptions.includeNumbers) {
             updateToggle { copy(includeNumbers = !includeNumbers) }
         }
 
-        ToggleItem("Symbols (!@#...)", generatorOptions.includeSymbols) {
+        ToggleItem(stringResource(R.string.symbols), generatorOptions.includeSymbols) {
             updateToggle { copy(includeSymbols = !includeSymbols) }
         }
 
-        ToggleItem("Exclude Similar Characters", generatorOptions.excludeSimilarChars) {
+        ToggleItem(stringResource(R.string.exclude_similar_characters), generatorOptions.excludeSimilarChars) {
             updateToggle { copy(excludeSimilarChars = !excludeSimilarChars) }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         CustomButton(
-            title = "Generate New Password",
+            title = stringResource(R.string.generate_new_password),
             onClick = { generateNewPassword() },
             fullWidth = true,
             size = ButtonSize.Large

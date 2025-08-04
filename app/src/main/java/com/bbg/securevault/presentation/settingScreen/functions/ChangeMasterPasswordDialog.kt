@@ -18,8 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bbg.securevault.R
 import com.bbg.securevault.domain.local.EncryptedPasswordDatabase
 import com.bbg.securevault.presentation.passwords.PasswordTextField
 import com.bbg.securevault.presentation.passwords.masterPassword.SaveMasterPasswordToFirestore
@@ -45,23 +47,23 @@ fun ChangeMasterPasswordDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Change Master Password") },
+        title = { Text(stringResource(R.string.change_master_password)) },
         text = {
             Column {
                 PasswordTextField(
-                    label = "Current Password",
+                    label = stringResource(R.string.current_password),
                     password = currentPasswordInput,
                     onPasswordChange = { currentPasswordInput = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 PasswordTextField(
-                    label = "New Password",
+                    label = stringResource(R.string.new_password),
                     password = newPasswordInput,
                     onPasswordChange = { newPasswordInput = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 PasswordTextField(
-                    label = "Confirm New Password",
+                    label = stringResource(R.string.confirm_new_password),
                     password = confirmNewPasswordInput,
                     onPasswordChange = { confirmNewPasswordInput = it }
                 )
@@ -93,8 +95,15 @@ fun ChangeMasterPasswordDialog(
                                         password = newPasswordInput,
                                         onSuccess = {
                                             EncryptedPasswordDatabase.resetInstance() // clear old db instance
-                                            EncryptedPasswordDatabase.getInstance(context, newPasswordInput) // create new db with new password
-                                            Toast.makeText(context, "Master password changed successfully", Toast.LENGTH_SHORT).show()
+                                            EncryptedPasswordDatabase.getInstance(
+                                                context,
+                                                newPasswordInput
+                                            ) // create new db with new password
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.master_password_changed_successfully),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             onDismiss()
                                         },
                                         onError = {
@@ -109,22 +118,24 @@ fun ChangeMasterPasswordDialog(
                                 }
                             )
                         } else {
-                            errorMessage = "New passwords do not match or are too short."
+                            errorMessage =
+                                context.getString(R.string.new_passwords_do_not_match_or_are_too_short)
                             successMessage = ""
                         }
                     },
                     onError = {
                         errorMessage = it
                         successMessage = ""
+
                     }
                 )
             }) {
-                Text("Submit")
+                Text(stringResource(R.string.submit))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.abbrechen))
             }
         },
         containerColor = Color.White,

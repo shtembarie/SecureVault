@@ -1,5 +1,7 @@
 package com.bbg.securevault.presentation.core
 
+import android.content.Context
+import com.bbg.securevault.R
 import com.bbg.securevault.data.models.PasswordGeneratorOptions
 
 /**

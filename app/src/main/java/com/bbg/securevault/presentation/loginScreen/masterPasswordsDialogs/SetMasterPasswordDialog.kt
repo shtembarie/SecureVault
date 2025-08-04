@@ -7,7 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bbg.securevault.R
 import com.bbg.securevault.presentation.passwords.PasswordTextField
 import com.bbg.securevault.presentation.passwords.masterPassword.SaveMasterPasswordToFirestore
 import com.google.firebase.auth.FirebaseAuth
@@ -33,19 +35,19 @@ fun SetMasterPasswordDialog(
 
     AlertDialog(
         onDismissRequest = {},
-        title = { Text("Set Master Password") },
+        title = { Text(stringResource(R.string.set_master_password)) },
         text = {
             Column {
-                Text("Create your secure Master Password.")
+                Text(stringResource(R.string.create_your_secure_master_password))
                 Spacer(modifier = Modifier.height(8.dp))
                 PasswordTextField(
-                    label = "Master Password",
+                    label = stringResource(R.string.master_password),
                     password = newPassword,
                     onPasswordChange = onNewPasswordChange
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 PasswordTextField(
-                    label = "Confirm Master Password",
+                    label = stringResource(R.string.confirm_master_password),
                     password = confirmPassword,
                     onPasswordChange = onConfirmPasswordChange
                 )
@@ -64,15 +66,15 @@ fun SetMasterPasswordDialog(
                         )
                     }
                 } else {
-                    onError("Passwords do not match or too short.")
+                    onError(context.getString(R.string.passwords_do_not_match_or_too_short))
                 }
             }) {
-                Text("Save")
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.abbrechen))
             }
         },
         containerColor = Color.White,

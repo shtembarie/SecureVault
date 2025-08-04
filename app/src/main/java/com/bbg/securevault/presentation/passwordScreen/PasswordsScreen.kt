@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -77,7 +78,7 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
                     onValueChange = { searchQuery = it },
                     placeholder = {
                         Text(
-                            "Search passwords...",
+                            stringResource(R.string.search_passwords),
                             color = colorResource(R.color.placeholder)
                         )
                     },
@@ -96,7 +97,7 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
                     showSearch = false
                     searchQuery = TextFieldValue()
                 }) {
-                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = colorResource(R.color.textSecondary))
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.clear), tint = colorResource(R.color.textSecondary))
                 }
             }
         }
@@ -110,7 +111,10 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${filtered.size} ${if (filtered.size == 1) "Password" else "Passwords"}",
+                    text = "${filtered.size} ${if (filtered.size == 1) stringResource(R.string.passwort) else stringResource(
+                        R.string.passwords
+                    )
+                    }",
                     color = colorResource(R.color.textSecondary),
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -133,7 +137,9 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
             if (filtered.isEmpty()) {
                 item {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(top = 100.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Box(
@@ -152,14 +158,14 @@ fun PasswordsScreen(onAddPassword: () -> Unit, navController: NavController) {
                             )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
-                        Text("No passwords yet", style = MaterialTheme.typography.titleMedium, color = colorResource(R.color.text))
+                        Text(stringResource(R.string.no_passwords_yet), style = MaterialTheme.typography.titleMedium, color = colorResource(R.color.text))
                         Text(
-                            "Add your first password by tapping the + button",
+                            stringResource(R.string.add_your_first_password_by_tapping_the_button),
                             style = MaterialTheme.typography.bodyMedium,
                             color = colorResource(R.color.textSecondary),
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
-                        CustomButton(title = "Add Password", onClick = onAddPassword)
+                        CustomButton(title = stringResource(R.string.add_password), onClick = onAddPassword)
                     }
                 }
             } else {

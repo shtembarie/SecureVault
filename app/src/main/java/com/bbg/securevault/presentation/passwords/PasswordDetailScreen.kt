@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
@@ -55,10 +56,10 @@ fun PasswordDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Password not found", color = Color.Red)
+            Text(stringResource(R.string.password_not_found), color = Color.Red)
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { navController.popBackStack() }) {
-                Text("Go Back")
+                Text(stringResource(R.string.go_back))
             }
         }
         return
@@ -75,21 +76,17 @@ fun PasswordDetailScreen(
                 title = { Text(text = password.title) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     IconButton(onClick = { toggleFavorite(password.id) }) {
                         Icon(
                             Icons.Default.Star,
-                            contentDescription = "Favorite",
+                            contentDescription = stringResource(R.string.favorite),
                             tint = if (password.favorite) Color.Yellow else Color.Gray
                         )
                     }
-//                    IconButton(
-//                        onClick = { navController.navigate("password/edit/${password.id}") }) {
-//                        Icon(Icons.Default.Edit, contentDescription = "Edit")
-//                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,              // Matches full background
@@ -114,9 +111,12 @@ fun PasswordDetailScreen(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    InfoRow(label = "Username / Email", value = password.username, copyable = true)
                     InfoRow(
-                        label = "Password",
+                        label = stringResource(R.string.username_email),
+                        value = password.username,
+                        copyable = true)
+                    InfoRow(
+                        label = stringResource(R.string.passwort),
                         value = if (showPassword) password.password else "••••••••••",
                         copyable = true,
                         toggleable = true,
@@ -126,7 +126,7 @@ fun PasswordDetailScreen(
                     )
                     password.url?.let { url ->
                         InfoRow(
-                            label = "Website",
+                            label = stringResource(R.string.website),
                             value = url,
                             trailingIcon = Icons.Default.OpenInNew,
                             onTrailingIconClick = {
@@ -134,25 +134,26 @@ fun PasswordDetailScreen(
                                 val input = url.trim()
 
                                 try {
-                                    // ✅ Try to launch it as an app by package name
+                                    // Try to launch it as an app by package name
                                     val launchIntent = context.packageManager.getLaunchIntentForPackage(input)
                                     if (launchIntent != null) {
                                         context.startActivity(launchIntent)
                                     } else {
-                                        // ❌ If not found as app, try as a web URL
+                                        // If not found as app, try as a web URL
                                         val webUrl = if (!input.startsWith("http")) "https://$input" else input
                                         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
                                         context.startActivity(webIntent)
                                     }
                                 } catch (e: Exception) {
-                                    Toast.makeText(context, "Could not open: $input", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context,
+                                        context.getString(R.string.could_not_open, input), Toast.LENGTH_SHORT).show()
                                 }
                             }
                         )
                     }
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = "Category",
+                        text = stringResource(R.string.category),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.Gray
                     )
@@ -169,14 +170,14 @@ fun PasswordDetailScreen(
 
                     Spacer(Modifier.height(16.dp))
                     password.notes?.let {
-                        Text("Notes", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                        Text(stringResource(R.string.notes), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                         Text(it, style = MaterialTheme.typography.bodyMedium)
                     }
                     Spacer(Modifier.height(16.dp))
                     Divider()
                     Spacer(Modifier.height(8.dp))
-                    Text("Created: ${formatDate(password.createdAt)}", style = MaterialTheme.typography.labelSmall)
-                    Text("Last modified: ${formatDate(password.lastModified)}", style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.created, formatDate(password.createdAt)), style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.last_modified, formatDate(password.lastModified)), style = MaterialTheme.typography.labelSmall)
                 }
             }
 
@@ -186,7 +187,7 @@ fun PasswordDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4266AC))
             ) {
-                Text("Edit Password")
+                Text(stringResource(R.string.edit_password))
             }
             Spacer(Modifier.height(8.dp))
             Button(
@@ -194,26 +195,26 @@ fun PasswordDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
-                Text("Delete Password")
+                Text(stringResource(R.string.delete_password))
             }
             if (showDeleteDialog) {
                 AlertDialog(
                     containerColor = colorResource(R.color.background),
                     onDismissRequest = { showDeleteDialog = false },
-                    title = { Text("Delete Password") },
-                    text = { Text("Are you sure you want to delete this password? This action cannot be undone.") },
+                    title = { Text(stringResource(R.string.delete_password)) },
+                    text = { Text(stringResource(R.string.are_you_sure_you_want_to_delete_this_password_this_action_cannot_be_undone)) },
                     confirmButton = {
                         TextButton(onClick = {
                             deletePassword(password.id)               //  Perform delete
                             navController.popBackStack()              //  Navigate back
                             showDeleteDialog = false                  //  Close dialog
                         }) {
-                            Text("Yes", color = Color.Red)
+                            Text(stringResource(R.string.yes), color = Color.Red)
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showDeleteDialog = false }) {
-                            Text("Cancel")
+                            Text(stringResource(R.string.abbrechen))
                         }
                     }
                 )
