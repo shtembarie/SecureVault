@@ -122,7 +122,7 @@
     <string name="add_password">Passwort hinzufügen</string>
     <string name="submit">Bestätigen</string>
     <string name="new_passwords_do_not_match_or_are_too_short">Neue Passwörter stimmen nicht überein oder sind zu kurz.</string>
-    <string name="master_password_changed_successfully">Master-Passwort erfolgreich geändert</string>
+    <string name="master_password_changed_successfully">Master-Passwort wurde erfolgreich geändert</string>
     <string name="change_master_password">Master-Passwort ändern</string>
     <string name="current_password">Aktuelles Passwort</string>
     <string name="confirm_new_password">Neues Passwort bestätigen</string>
@@ -153,7 +153,8 @@
 </string>
     <string name="settings">Einstellungen</string>
     <string name="generator">Generator</string>
-
-
-
+    <string name="please_log_in_using_your_credentials">Bitte melden Sie sich mit Ihren Zugangsdaten an.</string>
+    <string name="no_saved_credentials_found">Keine gespeicherten Anmeldeinformationen gefunden</string>
+    <string name="this_device_is_already_linked_to_another_account_please_log_in_with_your_original_account">Dieses Gerät ist bereits mit einem anderen Konto verknüpft. Bitte melden Sie sich mit Ihrem ursprünglichen Konto an.</string>
+    <string name="biometric_errors">Biometrische Fehler</string>
 </resources>

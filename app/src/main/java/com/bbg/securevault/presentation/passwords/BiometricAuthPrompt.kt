@@ -10,6 +10,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import com.bbg.securevault.R
+import com.bbg.securevault.data.objects.EncryptedPrefs
+import com.google.firebase.auth.FirebaseAuth
+
 
 /**
  * Created by Enoklit on 10.06.2025.
@@ -37,7 +40,27 @@ fun BiometricAuthPrompt(
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    onAuthSuccess()
+
+                    val credentials = EncryptedPrefs.loadEmailAndPassword(context)
+                    if (credentials != null) {
+                        val (email, password) = credentials
+
+                        FirebaseAuth.getInstance()
+                            .signInWithEmailAndPassword(email, password)
+                            .addOnSuccessListener {
+                                onAuthSuccess()
+                            }
+                            .addOnFailureListener {
+                                onAuthError(
+                                    context.getString(
+                                        R.string.authentication_error,
+                                        it.message ?: "Unknown error"
+                                    )
+                                )
+                            }
+                    } else {
+                        onAuthError(context.getString(R.string.no_saved_credentials_found))
+                    }
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -53,6 +76,7 @@ fun BiometricAuthPrompt(
 
         biometricPrompt.authenticate(promptInfo)
     }
+
 }
 
 fun Context.findActivity(): Activity? {

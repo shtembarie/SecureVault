@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,10 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bbg.securevault.R
 import com.bbg.securevault.domain.local.EncryptedPasswordDatabase
+import com.bbg.securevault.domain.local.repository.PasswordRepository
 import com.bbg.securevault.presentation.passwords.PasswordTextField
 import com.bbg.securevault.presentation.passwords.masterPassword.SaveMasterPasswordToFirestore
 import com.bbg.securevault.presentation.passwords.masterPassword.VerifyMasterPassword
 import com.bbg.securevault.presentation.passwords.masterPassword.changeDatabasePassword
+import com.bbg.securevault.data.models.NotificationType
+import com.bbg.securevault.shared.ui.NotificationBanner
+import kotlinx.coroutines.delay
 
 /**
  * Created by Enoklit on 11.06.2025.
@@ -44,7 +51,29 @@ fun ChangeMasterPasswordDialog(
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
     val context = LocalContext.current
+    var showBanner by remember { mutableStateOf(false) }
+    var bannerType by remember { mutableStateOf(NotificationType.SUCCESS) }
+    var bannerTitle by remember { mutableStateOf("") }
+    var bannerMessage by remember { mutableStateOf("") }
 
+    // Auto-close after 5 seconds
+    LaunchedEffect(showBanner) {
+        if (showBanner) {
+            delay(5000)
+            showBanner = false
+        }
+    }
+    if (showBanner) {
+        NotificationBanner(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            type = bannerType,
+            title = bannerTitle,
+            message = bannerMessage,
+            onClose = { showBanner = false }
+        )
+    }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.change_master_password)) },
@@ -80,6 +109,11 @@ fun ChangeMasterPasswordDialog(
         },
         confirmButton = {
             Button(onClick = {
+                if (currentPasswordInput.isBlank()) {
+                    errorMessage = context.getString(R.string.master_password_should_not_be_empty)
+                    successMessage = ""
+                    return@Button
+                }
                 VerifyMasterPassword(
                     uid = uid,
                     inputPassword = currentPasswordInput,
@@ -94,10 +128,12 @@ fun ChangeMasterPasswordDialog(
                                         uid = uid,
                                         password = newPasswordInput,
                                         onSuccess = {
-                                            EncryptedPasswordDatabase.resetInstance() // clear old db instance
+                                            EncryptedPasswordDatabase.resetInstance()  // reset DB instance
+                                            PasswordStore.reset()
+                                            PasswordStore.masterPassword = newPasswordInput
                                             EncryptedPasswordDatabase.getInstance(
                                                 context,
-                                                newPasswordInput
+                                                newPasswordInput,
                                             ) // create new db with new password
                                             Toast.makeText(
                                                 context,

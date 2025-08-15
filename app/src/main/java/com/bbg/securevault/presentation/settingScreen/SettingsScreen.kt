@@ -32,8 +32,12 @@ import com.bbg.securevault.presentation.settingScreen.cards.Section
 import com.bbg.securevault.presentation.settingScreen.cards.SettingItem
 import com.bbg.securevault.presentation.settingScreen.cards.ToggleItem
 import com.bbg.securevault.presentation.settingScreen.functions.ChangeMasterPasswordDialog
+import com.bbg.securevault.shared.ui.NotificationBanner
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import com.bbg.securevault.data.models.NotificationType
+import kotlinx.coroutines.delay
+
 
 /**
  * Created by Enoklit on 04.06.2025.
@@ -51,13 +55,27 @@ fun SettingsScreen(
     var showBiometricPrompt by remember { mutableStateOf(false) }
     var pendingToggleValue by remember { mutableStateOf(biometricEnabled) } // we store the intent
     var biometricError by remember { mutableStateOf<String?>(null) }
+    var showBanner by remember { mutableStateOf(false) }
+    var bannerType by remember { mutableStateOf(NotificationType.ERROR) }
+    var bannerTitle by remember { mutableStateOf("") }
+    var bannerMessage by remember { mutableStateOf("") }
 
 
+
+    // Auto-close after 5 seconds
+    LaunchedEffect(showBanner) {
+        if (showBanner) {
+            delay(5000)
+            showBanner = false
+        }
+    }
 
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .background(Color.White)
         .padding(16.dp)) {
+
+
 
         item {
             Section(title = "Security") {
@@ -104,10 +122,27 @@ fun SettingsScreen(
                         }
                     )
                 }
-                biometricError?.let {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(it, color = Color.Red, fontSize = 12.sp)
+                if (showBanner) {
+                    NotificationBanner(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        type = bannerType,
+                        title = bannerTitle,
+                        message = bannerMessage,
+                        onClose = { showBanner = false }
+                    )
                 }
+                biometricError?.let {
+                    // trigger banner
+                    bannerType = NotificationType.ERROR
+                    bannerTitle = stringResource(R.string.biometric_errors)
+                    bannerMessage = it
+                    showBanner = true
+                    biometricError = null // reset so it doesn't repeat
+                }
+
+
 
 
 
@@ -118,8 +153,7 @@ fun SettingsScreen(
                 onClick = { showNotImplemented(context) }
             )
         }
-
-        Section(title = "Preferences") {
+            Section(title = "Preferences") {
             ToggleItem(
                 icon = { Icon(Icons.Default.DarkMode, contentDescription = null, tint = colorResource(R.color.primary)) },
                 title = stringResource(R.string.dark_mode),
@@ -136,6 +170,8 @@ fun SettingsScreen(
                 onToggle = { showNotImplemented(context) }
             )
         }
+
+         
 
         Section(title = stringResource(R.string.data_management)) {
             SettingItem(
@@ -161,6 +197,7 @@ fun SettingsScreen(
             )
         }
 
+
         Section(title = stringResource(R.string.account)) {
             SettingItem(
                 icon = { Icon(Icons.Default.Logout, contentDescription = null, tint = colorResource(R.color.danger)) },
@@ -170,9 +207,7 @@ fun SettingsScreen(
                 destructive = true
             )
         }
-
         Spacer(modifier = Modifier.height(32.dp))
-
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.securevault_v1_0_0), fontSize = 14.sp, color = colorResource(R.color.textSecondary))
             Text(stringResource(R.string._2025_securevault), fontSize = 12.sp, color = colorResource(R.color.textSecondary))

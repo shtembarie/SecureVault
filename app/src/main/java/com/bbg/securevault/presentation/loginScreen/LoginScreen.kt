@@ -4,20 +4,21 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bbg.securevault.R
+import com.bbg.securevault.data.models.NotificationType
+import com.bbg.securevault.data.objects.EncryptedPrefs
 import com.bbg.securevault.domain.BiometricSettingsStore
+import com.bbg.securevault.domain.googlesigninandup.GoogleAuthManager
 import com.bbg.securevault.presentation.loginScreen.loginsFormSections.VerificationWaitingScreen
 import com.bbg.securevault.presentation.loginScreen.loginsFormSections.biometrics.BiometricPromptWrapper
 import com.bbg.securevault.presentation.loginScreen.loginsFormSections.biometrics.LoginFormSection
@@ -25,11 +26,10 @@ import com.bbg.securevault.presentation.loginScreen.loginsFormSections.loginScre
 import com.bbg.securevault.presentation.loginScreen.masterPasswordsDialogs.MasterPasswordDialog
 import com.bbg.securevault.presentation.loginScreen.masterPasswordsDialogs.SetMasterPasswordDialog
 import com.bbg.securevault.presentation.passwords.LoadingIndicator
-import com.google.firebase.auth.FirebaseAuth
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.IntentSenderRequest
-import com.bbg.securevault.domain.googlesigninandup.GoogleAuthManager
 import com.bbg.securevault.presentation.passwords.masterPassword.HasMasterPassword
+import com.bbg.securevault.shared.ui.NotificationBanner
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
 
 /**
  * Created by Enoklit on 05.06.2025.
@@ -146,6 +146,8 @@ fun LoginScreen(navController: NavController) {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     if (user?.isEmailVerified == true) {
+                        // Save _Biometric credentials:
+                        EncryptedPrefs.saveEmailAndPassword(context, email.trim(), password)
                         showMasterPasswordDialog = true
                     } else {
                         error =
@@ -184,6 +186,12 @@ fun LoginScreen(navController: NavController) {
                         loading = false
                         if (task.isSuccessful) {
                             auth.currentUser?.sendEmailVerification()
+                            if (user != null) {
+                                if (user.isEmailVerified) {
+                                    // // Save credentials for biometric login
+                                    EncryptedPrefs.saveEmailAndPassword(context, email.trim(), password)
+                                }
+                            }
                             // Hier: Warte auf Verifizierung mit Polling
                             showVerificationWaiting = true
                             isNewUser = false
@@ -230,6 +238,7 @@ fun LoginScreen(navController: NavController) {
             onCheckNow = { manualVerificationCheck() }
         )
     }
+
     LoginFormSection(
         isVisible = !showBiometricPrompt,
         isNewUser = isNewUser,
@@ -267,7 +276,6 @@ fun LoginScreen(navController: NavController) {
         googleSignInLauncher = googleSignInLauncher
 
     )
-
     BiometricPromptWrapper(
         show = showBiometricPrompt,
         onSuccess = {
@@ -314,4 +322,5 @@ fun LoginScreen(navController: NavController) {
     if (loading) {
         LoadingIndicator()
     }
-    }
+
+}
