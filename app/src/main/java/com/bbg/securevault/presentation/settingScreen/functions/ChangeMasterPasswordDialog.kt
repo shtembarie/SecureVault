@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bbg.securevault.R
-import com.bbg.securevault.domain.PasswordStore
 import com.bbg.securevault.domain.local.EncryptedPasswordDatabase
 import com.bbg.securevault.domain.local.repository.PasswordRepository
 import com.bbg.securevault.presentation.passwords.PasswordTextField

@@ -13,6 +13,7 @@ import com.bbg.securevault.R
 import com.bbg.securevault.data.objects.EncryptedPrefs
 import com.google.firebase.auth.FirebaseAuth
 
+
 /**
  * Created by Enoklit on 10.06.2025.
  */

@@ -157,6 +157,4 @@
     <string name="no_saved_credentials_found">Keine gespeicherten Anmeldeinformationen gefunden</string>
     <string name="this_device_is_already_linked_to_another_account_please_log_in_with_your_original_account">Dieses Gerät ist bereits mit einem anderen Konto verknüpft. Bitte melden Sie sich mit Ihrem ursprünglichen Konto an.</string>
     <string name="biometric_errors">Biometrische Fehler</string>
-
-
 </resources>

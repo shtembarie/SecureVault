@@ -170,7 +170,10 @@ fun SettingsScreen(
                 onToggle = { showNotImplemented(context) }
             )
         }
-            Section(title = stringResource(R.string.data_management)) {
+
+         
+
+        Section(title = stringResource(R.string.data_management)) {
             SettingItem(
                 icon = { Icon(Icons.Default.Download, contentDescription = null, tint = colorResource(R.color.primary)) },
                 title = stringResource(R.string.export_passwords),
@@ -193,7 +196,9 @@ fun SettingsScreen(
                 destructive = true
             )
         }
-            Section(title = stringResource(R.string.account)) {
+
+
+        Section(title = stringResource(R.string.account)) {
             SettingItem(
                 icon = { Icon(Icons.Default.Logout, contentDescription = null, tint = colorResource(R.color.danger)) },
                 title = stringResource(R.string.logout),
@@ -202,8 +207,8 @@ fun SettingsScreen(
                 destructive = true
             )
         }
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(32.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.securevault_v1_0_0), fontSize = 14.sp, color = colorResource(R.color.textSecondary))
             Text(stringResource(R.string._2025_securevault), fontSize = 12.sp, color = colorResource(R.color.textSecondary))
         }

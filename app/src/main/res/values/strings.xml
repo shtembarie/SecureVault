@@ -155,6 +155,4 @@
     <string name="biometric_errors">Biometric errors</string>
     <string name="master_password_should_not_be_empty">Master Password should not be empty</string>
     <string name="success">Success</string>
-
-
 </resources>
